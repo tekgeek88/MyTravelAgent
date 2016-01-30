@@ -1,5 +1,11 @@
 /**
-    Created by Carl Argabright, Aaron Harris, Sinh Le, and 
+    Copyright 2014-2015 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+
+    Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file except in compliance with the License. A copy of the License is located at
+
+        http://aws.amazon.com/apache2.0/
+
+    or in the "license" file accompanying this file. This file is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
 /**
@@ -12,14 +18,13 @@
  *
  * Examples:
  * One-shot model:
- * User: "Alexa, book a flight from Seatlle to las vegas on January 30th"
  * User:  "Alexa, ask History Buff what happened on August thirtieth."
  * Alexa: "For August thirtieth, in 2003, [...] . Wanna go deeper in history?"
  * User: "No."
  * Alexa: "Good bye!"
  *
  * Dialog model:
- * User:  "Alexa, open My Travel Agent"
+ * User:  "Alexa, open History Buff"
  * Alexa: "History Buff. What day do you want events for?"
  * User:  "August thirtieth."
  * Alexa: "For August thirtieth, in 2003, [...] . Wanna go deeper in history?"
@@ -33,7 +38,7 @@
 /**
  * App ID for the skill
  */
-var APP_ID = 'amzn1.echo-sdk-ams.app.34bdad6e-28e4-4c99-81ed-677c4da11366';
+var APP_ID = 'amzn1.echo-sdk-ams.app.34bdad6e-28e4-4c99-81ed-677c4da11366'; //replace with 'amzn1.echo-sdk-ams.app.[your-unique-value-here]';
 
 var https = require('https');
 
@@ -101,10 +106,9 @@ HistoryBuffSkill.prototype.intentHandlers = {
     },
 
     "AMAZON.HelpIntent": function (intent, session, response) {
-        //var speechText = "With History Buff, you can get historical events for any day of the year.  " +
-        //    "For example, you could say today, or August thirtieth, or you can say exit. Now, which day do you want?";
-        var speechText = "With MyTravelAgent, you can get prices on airfare and hotels"
-        var repromptText = "Which one do you want?";
+        var speechText = "With History Buff, you can get historical events for any day of the year.  " +
+            "For example, you could say today, or August thirtieth, or you can say exit. Now, which day do you want?";
+        var repromptText = "Which day do you want?";
         var speechOutput = {
             speech: speechText,
             type: AlexaSkill.speechOutputType.PLAIN_TEXT
@@ -115,19 +119,18 @@ HistoryBuffSkill.prototype.intentHandlers = {
         };
         response.ask(speechOutput, repromptOutput);
     },
-    // This is spoken when the user says, "stop"
+
     "AMAZON.StopIntent": function (intent, session, response) {
         var speechOutput = {
-                speech: "Thank you for using My Travel Agent.  Goodbye",
+                speech: "Goodbye",
                 type: AlexaSkill.speechOutputType.PLAIN_TEXT
         };
         response.tell(speechOutput);
     },
 
-    // This is spoken when the user says, "cancel"
     "AMAZON.CancelIntent": function (intent, session, response) {
         var speechOutput = {
-                speech: "Thank you for using My Travel Agent, Goodbye",
+                speech: "Goodbye",
                 type: AlexaSkill.speechOutputType.PLAIN_TEXT
         };
         response.tell(speechOutput);
@@ -140,11 +143,10 @@ HistoryBuffSkill.prototype.intentHandlers = {
 
 function getWelcomeResponse(response) {
     // If we wanted to initialize the session to have some attributes we could add those here.
-    var cardTitle = "Hot Deals from Expedia";
-    //var repromptText = "With History Buff, you can get historical events for any day of the year.  For example, you could say today, or August thirtieth. Now, which day do you want?";
-    var repromptText = "With My Travel Agent you can get the most recent prices for airfare and hotel bookings thanks to Expedia"
-    var speechText = "<p>My Travel Agent.</p> <p>Would you like to check for airfare, or hotel bookings</p>";
-    var cardOutput = "My Travel Agent. Would you like to check for airfare, or hotel bookings";
+    var cardTitle = "This Day in History";
+    var repromptText = "With History Buff, you can get historical events for any day of the year.  For example, you could say today, or August thirtieth. Now, which day do you want?";
+    var speechText = "<p>History buff.</p> <p>What day do you want events for?</p>";
+    var cardOutput = "History Buff. What day do you want events for?";
     // If the user either does not reply to the welcome message or says something that is not
     // understood, they will be prompted again with this text.
 
@@ -164,7 +166,7 @@ function getWelcomeResponse(response) {
  */
 function handleFirstEventRequest(intent, session, response) {
     var daySlot = intent.slots.day;
-    var repromptText = "With My Travel Agent, you can get prices for airfare and hotel rentals.  For example, you could say Book a Flight or Find a Hotel. Now, which day do you want?";
+    var repromptText = "With History Buff, you can get historical events for any day of the year.  For example, you could say today, or August thirtieth. Now, which day do you want?";
     var monthNames = ["January", "February", "March", "April", "May", "June",
                       "July", "August", "September", "October", "November", "December"
     ];
@@ -226,7 +228,7 @@ function handleNextEventRequest(intent, session, response) {
         repromptText = "Do you want to know more about what happened on this date?",
         i;
     if (!result) {
-        speechText = "With MyTravelAgent, you can get prices for hotels and airfare for any day of the year.  For example, you could say check airfare or get hotel prices. Now, which do you want?";
+        speechText = "With History Buff, you can get historical events for any day of the year.  For example, you could say today, or August thirtieth. Now, which day do you want?";
         cardContent = speechText;
     } else if (sessionAttributes.index >= result.length) {
         speechText = "There are no more events for this date. Try another date by saying <break time = \"0.3s\"/> get events for august thirtieth.";
@@ -256,7 +258,6 @@ function handleNextEventRequest(intent, session, response) {
     response.askWithCard(speechOutput, repromptOutput, cardTitle, cardContent);
 }
 
-// We will implement this function to fetch our flight data from Expedia
 function getJsonEventsFromWikipedia(day, date, eventCallback) {
     var url = urlPrefix + day + '_' + date;
 
@@ -276,8 +277,6 @@ function getJsonEventsFromWikipedia(day, date, eventCallback) {
     });
 }
 
-
-// We need to implement this method to parse back the flight information from Expedia
 function parseJson(inputText) {
     // sizeOf (/nEvents/n) is 10
     var text = inputText.substring(inputText.indexOf("\\nEvents\\n")+10, inputText.indexOf("\\n\\n\\nBirths")),
