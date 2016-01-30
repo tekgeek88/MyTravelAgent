@@ -10,14 +10,35 @@
       ]
     },
     {
+      "intent": "GetStartLocationEventIntent",
+      "slots": [
+        {
+          "name": "startLocation",
+          "type": "AMAZON.US_CITY"
+        }
+      ]
+    },
+    {
+      "intent": "GetEndLocationEventIntent",
+      "slots": [
+        {
+          "name": "endLocation",
+          "type": "AMAZON.US_CITY"
+        }
+      ]
+    },
+    {
       "intent": "GetNextEventIntent"
     },
+    
     {
       "intent": "AMAZON.HelpIntent"
     },
+    
     {
       "intent": "AMAZON.StopIntent"
     },
+    
     {
       "intent": "AMAZON.CancelIntent"
     }

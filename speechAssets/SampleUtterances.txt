@@ -1,8 +1,10 @@
-GetFirstEventIntent get events for {day}
-GetFirstEventIntent give me events for {day}
-GetFirstEventIntent what happened on {day}
-GetFirstEventIntent what happened
-GetFirstEventIntent {day}
+GetFirstEventIntent i want to book a {type}
+GetFirstEventIntent {type}
+
+GetEndLocationEventIntent i want to go to {endLocation}
+GetEndLocationEventIntent i want to book a trip to {endLocation}
+GetEndLocationEventIntent i want to book a flight to {endLocation}
+GetEndLocationEventIntent {endLocation}
 
 GetNextEventIntent yes
 GetNextEventIntent yup

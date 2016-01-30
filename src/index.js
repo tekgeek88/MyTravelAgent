@@ -1,6 +1,6 @@
 /**
-    Created by Carl Argabright, Aaron Harris, Sinh Le, and
-
+    Created by Carl Argabright, Aaron Harris, Sinh Le, and Daniel M.
+    
     Consumer Key    G8VVfMp8ufGIALoOz236921b4Jt3NmdK
     Consumer Secret mAeou3rVbnQresAi 
 */
@@ -33,11 +33,6 @@
  */
 
 
-
-
-
-
-
 /**
  * App ID for the skill
  */
@@ -53,7 +48,7 @@ var AlexaSkill = require('./AlexaSkill');
 /**
  * URL prefix to download history content from Wikipedia
  */
-var urlPrefix = 'https://en.wikipedia.org/w/api.php?action=query&prop=extracts&format=json&explaintext=&exsectionformat=plain&redirects=&titles=';
+var urlPrefix = 'http://terminal2.expedia.com/x/';
 
 /**
  * Variable defining number of events to be read at one time
@@ -66,39 +61,39 @@ var paginationSize = 3;
 var delimiterSize = 2;
 
 /**
- * HistoryBuffSkill is a child of AlexaSkill.
+ * MyTravelAgentSkill is a child of AlexaSkill.
  * To read more about inheritance in JavaScript, see the link below.
  *
  * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Introduction_to_Object-Oriented_JavaScript#Inheritance
  */
-var HistoryBuffSkill = function() {
+var MyTravelAgentSkill = function() {
     AlexaSkill.call(this, APP_ID);
 };
 
 // Extend AlexaSkill
-HistoryBuffSkill.prototype = Object.create(AlexaSkill.prototype);
-HistoryBuffSkill.prototype.constructor = HistoryBuffSkill;
+MyTravelAgentSkill.prototype = Object.create(AlexaSkill.prototype);
+MyTravelAgentSkill.prototype.constructor = MyTravelAgentSkill;
 
-HistoryBuffSkill.prototype.eventHandlers.onSessionStarted = function (sessionStartedRequest, session) {
-    console.log("HistoryBuffSkill onSessionStarted requestId: " + sessionStartedRequest.requestId
+MyTravelAgentSkill.prototype.eventHandlers.onSessionStarted = function (sessionStartedRequest, session) {
+    console.log("MyTravelAgentSkill onSessionStarted requestId: " + sessionStartedRequest.requestId
         + ", sessionId: " + session.sessionId);
 
     // any session init logic would go here
 };
 
-HistoryBuffSkill.prototype.eventHandlers.onLaunch = function (launchRequest, session, response) {
-    console.log("HistoryBuffSkill onLaunch requestId: " + launchRequest.requestId + ", sessionId: " + session.sessionId);
+MyTravelAgentSkill.prototype.eventHandlers.onLaunch = function (launchRequest, session, response) {
+    console.log("MyTravelAgentSkill onLaunch requestId: " + launchRequest.requestId + ", sessionId: " + session.sessionId);
     getWelcomeResponse(response);
 };
 
-HistoryBuffSkill.prototype.eventHandlers.onSessionEnded = function (sessionEndedRequest, session) {
+MyTravelAgentSkill.prototype.eventHandlers.onSessionEnded = function (sessionEndedRequest, session) {
     console.log("onSessionEnded requestId: " + sessionEndedRequest.requestId
         + ", sessionId: " + session.sessionId);
 
     // any session cleanup logic would go here
 };
 
-HistoryBuffSkill.prototype.intentHandlers = {
+MyTravelAgentSkill.prototype.intentHandlers = {
 
     "GetFirstEventIntent": function (intent, session, response) {
         handleFirstEventRequest(intent, session, response);
@@ -149,9 +144,14 @@ HistoryBuffSkill.prototype.intentHandlers = {
 function getWelcomeResponse(response) {
     // If we wanted to initialize the session to have some attributes we could add those here.
     var cardTitle = "Hot Deals from Expedia";
+    
     //var repromptText = "With History Buff, you can get historical events for any day of the year.  For example, you could say today, or August thirtieth. Now, which day do you want?";
-    var repromptText = "With My Travel Agent you can get the most recent prices for airfare and hotel bookings thanks to Expedia"
-    var speechText = "<p>My Travel Agent.</p> <p>Would you like to check for airfare, or hotel bookings</p>";
+    var repromptText = "Your Travel Agent allows you to book a flight or hotel through Expedia. " +
+            "To start, you can say, book a flight, or, book a hotel.";
+
+    var speechText = "Your Travel Agent allows you to book a flight or hotel through Expedia. " +
+            "To start, you can say, book a flight, or, book a hotel.";
+
     var cardOutput = "My Travel Agent. Would you like to check for airfare, or hotel bookings";
     // If the user either does not reply to the welcome message or says something that is not
     // understood, they will be prompted again with this text.
@@ -160,10 +160,12 @@ function getWelcomeResponse(response) {
         speech: "<speak>" + speechText + "</speak>",
         type: AlexaSkill.speechOutputType.SSML
     };
+
     var repromptOutput = {
         speech: repromptText,
         type: AlexaSkill.speechOutputType.PLAIN_TEXT
     };
+
     response.askWithCard(speechOutput, repromptOutput, cardTitle, cardOutput);
 }
 
@@ -171,11 +173,30 @@ function getWelcomeResponse(response) {
  * Gets a poster prepares the speech to reply to the user.
  */
 function handleFirstEventRequest(intent, session, response) {
-    var daySlot = intent.slots.day;
-    var repromptText = "With My Travel Agent, you can get prices for airfare and hotel rentals.  For example, you could say Book a Flight or Find a Hotel. Now, which day do you want?";
-    var monthNames = ["January", "February", "March", "April", "May", "June",
-                      "July", "August", "September", "October", "November", "December"
-    ];
+
+    var typeSlot = intent.slots.type;
+
+    var speechText = "Where would you like to book a " + typeSlot + " to?";
+    var repromptText = "Where would you like to book a " + typeSlot + " to?";
+    var cardContent = "";
+    var cardTitle = "";
+
+    var speechOutput = {
+        speech: "<speak>" + speechText + "</speak>",
+        type: AlexaSkill.speechOutputType.SSML
+    };
+
+    var repromptOutput = {
+        speech: repromptText,
+        type: AlexaSkill.speechOutputType.PLAIN_TEXT
+    };
+
+    response.askWithCard(speechOutput, repromptOutput, cardTitle, cardContent)
+
+}
+
+function handleEndLocationEventRequest(intent, session, response) {
+
     var sessionAttributes = {};
     // Read the first 3 events, then set the count to 3
     sessionAttributes.index = paginationSize;
@@ -191,7 +212,6 @@ function handleFirstEventRequest(intent, session, response) {
 
     var prefixContent = "<p>For " + monthNames[date.getMonth()] + " " + date.getDate() + ", </p>";
     var cardContent = "For " + monthNames[date.getMonth()] + " " + date.getDate() + ", ";
-
     var cardTitle = "Events on " + monthNames[date.getMonth()] + " " + date.getDate();
 
     getJsonEventsFromWikipedia(monthNames[date.getMonth()], date.getDate(), function (events) {
@@ -321,8 +341,8 @@ function parseJson(inputText) {
 
 // Create the handler that responds to the Alexa Request.
 exports.handler = function (event, context) {
-    // Create an instance of the HistoryBuff Skill.
-    var skill = new HistoryBuffSkill();
+    // Create an instance of the MyTravelAgent Skill.
+    var skill = new MyTravelAgentSkill();
     skill.execute(event, context);
 };
 
