@@ -1,5 +1,8 @@
 /**
-    Created by Carl Argabright, Aaron Harris, Sinh Le, and 
+    Created by Carl Argabright, Aaron Harris, Sinh Le, and
+
+    Consumer Key    G8VVfMp8ufGIALoOz236921b4Jt3NmdK
+    Consumer Secret mAeou3rVbnQresAi 
 */
 
 /**
@@ -28,6 +31,11 @@
  * User: "No."
  * Alexa: "Good bye!"
  */
+
+
+
+
+
 
 
 /**
