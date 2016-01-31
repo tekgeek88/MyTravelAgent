@@ -10,11 +10,19 @@ GetLocationsForTravel i would like to book a flight from {startLocation} to {end
 GetLocationsForTravel i would like to flight from {startLocation} to {endLocation}
 GetLocationsForTravel {startLocation} to {endLocation}
 
-GetTravelDate I would like to travel on {travelDate}
-GetTravelDate make it {travelDate}
-GetTravelDate schedule {travelDate}
-GetTravelDate on {travelDate}
-GetTravelDate {travelDate}
+GetHotelsIntent find me {a cheap hotel with a pool | naturalSpeechQuery}
+GetHotelsIntent find me {a hotel near a beach | naturalSpeechQuery}
+GetHotelsIntent find me {an accessible hotel | naturalSpeechQuery}
+GetHotelsIntent find me {a five-star hotel that allows pets | naturalSpeechQuery}
+
+GetDepartureDateIntent I would like to travel on {travelDate}
+GetDepartureDateIntent I would like to travel {travelDate}
+GetDepartureDateIntent make it on {travelDate}
+GetDepartureDateIntent schedule it on {travelDate}
+GetDepartureDateIntent make it {travelDate}
+GetDepartureDateIntent schedule it {travelDate}
+GetDepartureDateIntent on {travelDate}
+GetDepartureDateIntent {travelDate}
 
 AMAZON.StopIntent no
 AMAZON.StopIntent nope

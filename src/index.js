@@ -65,13 +65,19 @@ MyTravelAgentSkill.prototype.intentHandlers = {
         handleGetLocationsRequest(intent, session, response);
     },
 
+    "GetHotelsIntent": function(intent, session, response) {
+        handleGetHotelsRequest(intent, session, response);
+    },
+
+    "GetDepartureDateIntent": function(intent,session,response){
+        handleDepartureDateRequest(intent,session,response);
+    },
+
     "GetNextEventIntent": function (intent, session, response) {
         handleNextEventRequest(intent, session, response);
     },
 
     "AMAZON.HelpIntent": function (intent, session, response) {
-        //var speechText = "With History Buff, you can get historical events for any day of the year.  " +
-        //    "For example, you could say today, or August thirtieth, or you can say exit. Now, which day do you want?";
         var speechText = "With MyTravelAgent, you can get prices on airfare and hotels"
         var repromptText = "Which one do you want?";
         var speechOutput = {
@@ -156,7 +162,6 @@ function handleGetLocationsRequest(intent, session, response){
     var cardContent = "";
     var cardTitle = "Trip from " + sessionAttributes.startLocation + " to " + sessionAttributes.endLocation;
 
-
     getAirportByCity(sessionAttributes.startLocation, function (startingAirports) {
 
         sessionAttributes.startingAirport = startingAirports;
@@ -173,22 +178,104 @@ function handleGetLocationsRequest(intent, session, response){
 
                 sessionAttributes.endingAirport = endingAirports;
 
-                var speechText = "Okay. We will start planning your trip to " + sessionAttributes.endingAirport + ". When would you like to go?";
+                var responseText = "Okay. We will start planning your trip to " + sessionAttributes.endingAirport + ". When would you like to go?";
 
                 var speechOutput = {
-                    speech: "<speak>" + speechText + "</speak>",
+                    speech: "<speak>" + responseText + "</speak>",
                     type: AlexaSkill.speechOutputType.SSML
                 };
 
                 var repromptOutput = {
-                    speech: speechText,
+                    speech: responseText,
                     type: AlexaSkill.speechOutputType.PLAIN_TEXT
                 };
 
                 response.askWithCard(speechOutput, repromptOutput, cardTitle, cardContent);
             }
         });   
-    }
+    });
+}
+
+function handleDepartureDateRequest(intent, session, response){
+
+    var sessionAttributes = session.attributes;
+    sessionAttributes.departureDate = intent.slots.travelDate.value;
+
+    var responseText = "Okay. We'll look for flights departing on " + sessionAttributes.departureDate + ". How about a return flight?";
+
+    var speechOutput = {
+        speech: "<speak>" + responseText + "</speak>",
+        type: AlexaSkill.speechOutputType.SSML
+    };
+
+    var repromptOutput = {
+        speech: responseText,
+        type: AlexaSkill.speechOutputType.PLAIN_TEXT
+    };
+
+    response.ask(speechOutput, repromptOutput);
+}
+
+function handleGetHotelsRequest(intent, session, response){
+
+    var sessionAttributes = session.attributes;
+    console.log(sessionAttributes);
+
+    var cardContent = "";
+    var cardTitle = "";
+    
+    var naturalSpeechQuery = intent.slots.naturalSpeechQuery.value;
+    var url = urlPrefix + "nlp/results?q=" + encodeURI(naturalSpeechQuery) + "&limit=3&apikey=" + API_KEY;
+
+    http.get(url, function( res ) {
+        var data = '';
+        
+        res.on( 'data', function( x ) { 
+            data += x; 
+        });
+
+        res.on( 'end', function() {
+
+            var json = JSON.parse( data );
+            
+            // name array of the hotels
+            var hotelName = json.result.hotels.map(function(hotel) { return hotel.name; });
+
+            // array of points of interest for the location that the hotels where sourced from
+            var POIarray = json.result.pois.map(function(poi) { return poi.name; });
+            
+            // name array of the neighborhood where the hotel is 
+            var neighborhoods = json.result.neighborhoods.map(function(index) { return index.name; });
+
+            // confidence indicates whether the natural language query was successful - ranges from 0 to 1
+            var confidence = json.result.confidence;            
+            
+            // construct an array of hotel objects
+            var hotels = [];
+            for ( var i=0 ; i < hotelName.length ; i++ ) {
+                hotels[i].name = hotelName[i]
+                hotels[i].neighborhood = neighborhoods[i]
+            }
+            
+        });
+
+        // Now just construct the string to be sent back using the poi array, array of hotel objects, and perhaps use the confidence
+
+        var responseText = "Here are the names of some hotels in your area.";
+
+        var speechOutput = {
+            speech: "<speak>" + responseText + "</speak>",
+            type: AlexaSkill.speechOutputType.SSML
+        };
+
+        var repromptOutput = {
+            speech: responseText,
+            type: AlexaSkill.speechOutputType.PLAIN_TEXT
+        };
+
+        response.askWithCard(speechOutput, repromptOutput, cardTitle, cardContent);
+            
+    });
 }
 
 // We will implement this function to fetch our flight data from Expedia

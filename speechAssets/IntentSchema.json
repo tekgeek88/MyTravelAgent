@@ -1,7 +1,16 @@
 {
   "intents": [
     {
-      "intent": "GetFirstEventIntent",
+      "intent": "GetFirstEventIntent"
+    },
+    {
+      "intent": "GetHotelsIntent",
+      "slots": [
+        {
+          "name": "naturalSpeechQuery",
+          "type": "AMAZON.LITERAL"
+        }
+      ]
     },
     {
       "intent": "GetLocationsForTravel",
@@ -17,7 +26,7 @@
       ]
     },
     {
-      "intent": "GetTravelDate",
+      "intent": "GetDepartureDateIntent",
       "slots": [
         {
           "name": "travelDate",
