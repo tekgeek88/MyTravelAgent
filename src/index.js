@@ -93,7 +93,7 @@ MyTravelAgentSkill.prototype.intentHandlers = {
     // This is spoken when the user says, "stop"
     "AMAZON.StopIntent": function (intent, session, response) {
         var speechOutput = {
-                speech: "Thank you for using My Travel Agent.  Goodbye",
+                speech: "Ok. Thank you for using My Travel Agent.  Goodbye",
                 type: AlexaSkill.speechOutputType.PLAIN_TEXT
         };
         response.tell(speechOutput);
@@ -272,6 +272,8 @@ function handleGetHotelsRequest(intent, session, response){
         for (i = 0; i < POIarray; i++) {
             responseText += "<p> " + POIarray[i] + " </p>"
         }
+
+        response += "<p>Which hotel would you like me to book?</p>"
 
         var speechOutput = {
             speech: "<speak>" + responseText + "</speak>",
