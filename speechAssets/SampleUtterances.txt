@@ -1,17 +1,21 @@
-GetFirstEventIntent i want to book a {type}
-GetFirstEventIntent {type}
+GetFirstEventIntent book a flight
 
-GetEndLocationEventIntent i want to go to {endLocation}
-GetEndLocationEventIntent i want to book a trip to {endLocation}
-GetEndLocationEventIntent i want to book a flight to {endLocation}
-GetEndLocationEventIntent {endLocation}
+GetLocationsForTravel i want to go from {startLocation} to {endLocation}
+GetLocationsForTravel i want to book a trip from {startLocation} to {endLocation}
+GetLocationsForTravel i want to book a flight from {startLocation} to {endLocation}
+GetLocationsForTravel i want to flight from {startLocation} to {endLocation}
+GetLocationsForTravel i would like to go from {startLocation} to {endLocation}
+GetLocationsForTravel i would like to book a trip from {startLocation} to {endLocation}
+GetLocationsForTravel i would like to book a flight from {startLocation} to {endLocation}
+GetLocationsForTravel i would like to flight from {startLocation} to {endLocation}
+GetLocationsForTravel {startLocation} to {endLocation}
 
-GetNextEventIntent yes
-GetNextEventIntent yup
-GetNextEventIntent sure
-GetNextEventIntent yes please
+GetTravelDate I would like to travel on {travelDate}
+GetTravelDate make it {travelDate}
+GetTravelDate schedule {travelDate}
+GetTravelDate on {travelDate}
+GetTravelDate {travelDate}
 
 AMAZON.StopIntent no
 AMAZON.StopIntent nope
 AMAZON.StopIntent no thanks
-AMAZON.StopIntent no thank you

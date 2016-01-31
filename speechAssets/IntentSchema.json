@@ -4,23 +4,18 @@
       "intent": "GetFirstEventIntent",
       "slots": [
         {
-          "name": "day",
-          "type": "AMAZON.DATE"
+          "name": "type",
+          "type": "AMAZON.LITERAL"
         }
       ]
     },
     {
-      "intent": "GetStartLocationEventIntent",
+      "intent": "GetLocationsForTravel",
       "slots": [
         {
           "name": "startLocation",
           "type": "AMAZON.US_CITY"
-        }
-      ]
-    },
-    {
-      "intent": "GetEndLocationEventIntent",
-      "slots": [
+        },
         {
           "name": "endLocation",
           "type": "AMAZON.US_CITY"
@@ -28,7 +23,13 @@
       ]
     },
     {
-      "intent": "GetNextEventIntent"
+      "intent": "GetTravelDate",
+      "slots": [
+        {
+          "name": "travelDate",
+          "type": "AMAZON.DATE"
+        }
+      ]
     },
     
     {
