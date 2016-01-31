@@ -2,12 +2,6 @@
   "intents": [
     {
       "intent": "GetFirstEventIntent",
-      "slots": [
-        {
-          "name": "type",
-          "type": "AMAZON.LITERAL"
-        }
-      ]
     },
     {
       "intent": "GetLocationsForTravel",
