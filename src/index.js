@@ -267,6 +267,12 @@ function handleGetHotelsRequest(intent, session, response){
             responseText += "<p> " + hotels[i].name + " in the " + hotels[i].neighborhood + " </p>"
         }
 
+        responseText += "<p> at this location you can visit </p>"
+
+        for (i = 0; i < POIarray; i++) {
+            responseText += "<p> " + POIarray[i] + " </p>"
+        }
+
         var speechOutput = {
             speech: "<speak>" + responseText + "</speak>",
             type: AlexaSkill.speechOutputType.SSML
