@@ -42,7 +42,9 @@
     {
       "intent": "AMAZON.StopIntent"
     },
-    
+    {
+      "intent": "SetHotelIntent"
+    },
     {
       "intent": "AMAZON.CancelIntent"
     }

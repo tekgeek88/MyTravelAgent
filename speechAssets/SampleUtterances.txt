@@ -24,6 +24,10 @@ GetDepartureDateIntent schedule it {travelDate}
 GetDepartureDateIntent on {travelDate}
 GetDepartureDateIntent {travelDate}
 
+SetHotelIntent book the first one
+SetHotelIntent book the first flight
+SetHotelIntent book the first hotel
+
 AMAZON.StopIntent no
 AMAZON.StopIntent nope
 AMAZON.StopIntent no thanks
