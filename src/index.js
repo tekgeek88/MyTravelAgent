@@ -69,6 +69,10 @@ MyTravelAgentSkill.prototype.intentHandlers = {
         handleGetHotelsRequest(intent, session, response);
     },
 
+    "SetHotelIntent": function(intent, session, response) {
+        handleSetHotelRequest(intent, session, response);
+    },
+
     "GetDepartureDateIntent": function(intent,session,response){
         handleDepartureDateRequest(intent,session,response);
     },
@@ -152,6 +156,26 @@ function handleFirstEventRequest(intent, session, response) {
 
 }
 
+function  handleSetHotelRequest(intent, session, response) {
+
+    var responseText = "Ok, I have booked your hotel and sent you a confirmation.";
+    var cardContent = "Your hotel reservation";
+    var cardTitle = "<a href='https://www.expedia.com/Orange-County-Hotels-Anaheim-Majestic-Garden-Hotel.h24131.Hotel-Information'>https://www.expedia.com/Orange-County-Hotels-Anaheim-Majestic-Garden-Hotel.h24131.Hotel-Information</a>";
+
+    var speechOutput = {
+        speech: "<speak>" + responseText + "</speak>",
+        type: AlexaSkill.speechOutputType.SSML
+    };
+
+    var repromptOutput = {
+        speech: responseText,
+        type: AlexaSkill.speechOutputType.PLAIN_TEXT
+    };
+
+    response.tellWithCard(speechOutput, cardTitle, cardContent)
+
+}
+
 function handleGetLocationsRequest(intent, session, response){
 
     var sessionAttributes = {
@@ -178,7 +202,7 @@ function handleGetLocationsRequest(intent, session, response){
 
                 sessionAttributes.endingAirport = endingAirports;
 
-                var responseText = "Okay. We will start planning your trip to " + sessionAttributes.endingAirport + ". When would you like to go?";
+                var responseText = "Okay. We will start planning your trip to " + sessionAttributes.endLocation + ". When would you like to go?";
 
                 var speechOutput = {
                     speech: "<speak>" + responseText + "</speak>",
@@ -201,7 +225,7 @@ function handleDepartureDateRequest(intent, session, response){
     var sessionAttributes = session.attributes;
     sessionAttributes.departureDate = intent.slots.travelDate.value;
 
-    var responseText = "Okay. We'll look for flights departing on " + sessionAttributes.departureDate + ". How about a return flight?";
+    var responseText = "Okay. We'll look for flights departing on " + sessionAttributes.departureDate + ". What kind of hotel would you prefer?";
 
     var speechOutput = {
         speech: "<speak>" + responseText + "</speak>",
@@ -242,7 +266,7 @@ function handleGetHotelsRequest(intent, session, response){
             var hotelName = json.result.hotels.map(function(hotel) { return hotel.name; });
 
             // array of points of interest for the location that the hotels where sourced from
-            var POIarray = json.result.pois.map(function(poi) { return poi.name; });
+            // var POIarray = json.result.pois.map(function(poi) { return poi.name; });
             
             // name array of the neighborhood where the hotel is 
             var neighborhoods = json.result.neighborhoods.map(function(index) { return index.name; });
@@ -251,41 +275,46 @@ function handleGetHotelsRequest(intent, session, response){
             var confidence = json.result.confidence;            
             
             // construct an array of hotel objects
+
             var hotels = [];
             for ( var i=0 ; i < hotelName.length ; i++ ) {
-                hotels[i].name = hotelName[i]
-                hotels[i].neighborhood = neighborhoods[i]
+                // hotels[i] = {};
+                hotels[i] = hotelName[i];
+                // hotels[i].neighborhood = neighborhoods[i].value
             }
+            sessionAttributes.hotels = hotels;
             
-        });
 
-        // Now just construct the string to be sent back using the poi array, array of hotel objects, and perhaps use the confidence
+            var responseText = "Here are the names of some hotels in your area. " + hotels;
 
-        var responseText = "Here are the names of some hotels in your area.";
+            // for (i = 0; i < hotels; i++) {
+            //     responseText += "<p> " + hotels[i].name + " in the " + hotels[i].neighborhood + " </p>"
+            // }
 
-        for (i = 0; i < hotels; i++) {
-            responseText += "<p> " + hotels[i].name + " in the " + hotels[i].neighborhood + " </p>"
-        }
+            // responseText += "<p> at this location you can visit </p>"
 
-        responseText += "<p> at this location you can visit </p>"
+            // for (i = 0; i < POIarray; i++) {
+            //     responseText += "<p> " + POIarray[i] + " </p>"
+            // }
 
-        for (i = 0; i < POIarray; i++) {
-            responseText += "<p> " + POIarray[i] + " </p>"
-        }
+            // responseText += "<p>Which hotel should I book?</p>";
 
-        response += "<p>Which hotel would you like me to book?</p>"
+            response += "<p>Which hotel would you like me to book?</p>"
 
-        var speechOutput = {
-            speech: "<speak>" + responseText + "</speak>",
-            type: AlexaSkill.speechOutputType.SSML
-        };
+            var speechOutput = {
+                speech: "<speak>" + responseText + "</speak>",
+                type: AlexaSkill.speechOutputType.SSML
+            };
 
-        var repromptOutput = {
-            speech: responseText,
-            type: AlexaSkill.speechOutputType.PLAIN_TEXT
-        };
+            var repromptOutput = {
+                speech: responseText,
+                type: AlexaSkill.speechOutputType.PLAIN_TEXT
+            };
 
-        response.askWithCard(speechOutput, repromptOutput, cardTitle, cardContent);
+            response.askWithCard(speechOutput, repromptOutput, cardTitle, cardContent);
+            });
+
+            // Now just construct the string to be sent back using the poi array, array of hotel objects, and perhaps use the confidence
             
     });
 }
